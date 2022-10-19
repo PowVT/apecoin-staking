@@ -2,5 +2,12 @@
 src = 'src'
 out = 'out'
 libs = ['lib']
+solc = "0.8.10" # to use a specific local solc install set the path as `solc = "<path to solc>/solc"`
+cache = true
+cache_path = 'cache'
+optimization = true
+optimizer_runs = 2000
+etherscan_api_key="YOURETHERSCANAPIKEY"
+remappings = ["@openzeppelin/=lib/openzeppelin-contracts/"]
 
 # See more config options https://github.com/gakonst/foundry/tree/master/config
