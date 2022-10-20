@@ -5,9 +5,9 @@ import "../ApeCoinStaking.sol";
 import "../SimpleERC20.sol";
 import "../SimpleERC721.sol";
 
-// import "v2-contracts/OriginationController.sol";
-// import "v2-contracts/RepaymentController.sol";
-// import "v2-contracts/LoanCore.sol";
+import "@arcadexyz/OriginationController.sol";
+import "@arcadexyz/RepaymentController.sol";
+import "@arcadexyz/LoanCore.sol";
 
 import "forge-std/Test.sol";
 import "ds-test/test.sol";
