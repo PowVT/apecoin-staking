@@ -5,6 +5,10 @@ import "../ApeCoinStaking.sol";
 import "../SimpleERC20.sol";
 import "../SimpleERC721.sol";
 
+import "v2-contracts/OriginationController.sol";
+import "v2-contracts/RepaymentController.sol";
+import "v2-contracts/LoanCore.sol";
+
 import "forge-std/Test.sol";
 import "ds-test/test.sol";
 
@@ -22,6 +26,7 @@ contract ContractTest is Test {
     ApeCoinStaking public apeStake;
 
     function setUp() public {
+        /// Yuga set up
         apeCoin = new SimpleERC20("ApeCoin", "APE");
         bayc = new SimpleERC721("Bored Ape Yacht Club", "BAYC", "https://ipfs.io/ipfs/");
         mayc = new SimpleERC721("Mutant Ape Yacht Club", "MAYC", "https://ipfs.io/ipfs/");
@@ -43,6 +48,9 @@ contract ContractTest is Test {
         // start: Oct18
         // end: Nov18
         apeStake.addTimeRange(3, 10*10*18, 1666206000, 1668888000, 3_835_000*10**18);
+
+        /// Arcade Lending
+
     }
 
     function testDepositApe() public {
@@ -130,5 +138,18 @@ contract ContractTest is Test {
         vm.stopPrank();
     }
 
+    function testStartLoanDepositApeCoin() public {
+        vm.startPrank(alice);
+
+        bayc.mint(1);
+        assertEq(bayc.balanceOf(address(alice)), 1);
+        bayc.approve(address(apeStake), 0);
+        assertEq(bayc.getApproved(0), address(apeStake));
+        assertEq(bayc.ownerOf(0), address(alice));
+
+
+
+        vm.stopPrank();
+    }
 
 }
