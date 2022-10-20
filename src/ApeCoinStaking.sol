@@ -217,7 +217,7 @@ contract ApeCoinStaking is Ownable {
      * @param _amount Amount in ApeCoin
      * @dev Deposit on behalf of msg.sender. ApeCoin deposit must be >= 1 ApeCoin
      */
-    function depositSelfApeCoin(uint256 _amount) public {
+    function depositSelfApeCoin(uint256 _amount) external {
         depositApeCoin(_amount, msg.sender);
     }
 
@@ -866,10 +866,12 @@ contract ApeCoinStaking is Ownable {
             Position storage position = nftPosition[BAKC_POOL_ID][bakcTokenId];
 
             if(position.stakedAmount == 0) {
-                require(nftContracts[mainTypePoolId].ownerOf(mainTokenId) == msg.sender && !mainToBakc[mainTypePoolId][mainTokenId].isPaired
-                , "Main Token not owned by caller or already paired");
-                require(nftContracts[BAKC_POOL_ID].ownerOf(bakcTokenId) == msg.sender && !bakcToMain[bakcTokenId][mainTypePoolId].isPaired
-                ,"BAKC Token not owned by caller or already paired");
+                require(nftContracts[mainTypePoolId].ownerOf(mainTokenId) == msg.sender
+                , "msg.sender error");
+                // require(nftContracts[mainTypePoolId].ownerOf(mainTokenId) == msg.sender && !mainToBakc[mainTypePoolId][mainTokenId].isPaired
+                // , "Main Token not owned by caller or already paired");
+                // require(nftContracts[BAKC_POOL_ID].ownerOf(bakcTokenId) == msg.sender && !bakcToMain[bakcTokenId][mainTypePoolId].isPaired
+                // ,"BAKC Token not owned by caller or already paired");
                 mainToBakc[mainTypePoolId][mainTokenId] = PairingStatus(bakcTokenId, true);
                 bakcToMain[bakcTokenId][mainTypePoolId] = PairingStatus(mainTokenId, true);
             } else {

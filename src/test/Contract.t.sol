@@ -28,19 +28,107 @@ contract ContractTest is Test {
         bakc = new SimpleERC721("Bored Ape Kennel Club", "BAKC", "https://ipfs.io/ipfs/");
         apeStake = new ApeCoinStaking(address(apeCoin), address(bayc), address(mayc), address(bakc));
         // setup apeCoin staking pool (this test contract is the owner)
+        // start: Oct18
+        // end: Nov18
         apeStake.addTimeRange(0, 10*10*18, 1666206000, 1668888000, 30_000_000*10**18);
+        // setup bayc staking pool
+        // start: Oct18
+        // end: Nov18
+        apeStake.addTimeRange(1, 10*10*18, 1666206000, 1668888000, 47_105_000*10**18);
+        // setup mayc staking pool
+        // start: Oct18
+        // end: Nov18
+        apeStake.addTimeRange(2, 10*10*18, 1666206000, 1668888000, 19_060_000*10**18);
+        // setup bakc staking pool
+        // start: Oct18
+        // end: Nov18
+        apeStake.addTimeRange(3, 10*10*18, 1666206000, 1668888000, 3_835_000*10**18);
     }
 
-    function testExample() public {
+    function testDepositApe() public {
         vm.startPrank(alice);
 
         apeCoin.mint(address(alice), 1_000_000*10**18);
         assertEq(apeCoin.balanceOf(address(alice)), 1_000_000*10**18);
         apeCoin.approve(address(apeStake), 1_000*10**18);
         assertEq(apeCoin.allowance(address(alice), address(apeStake)), 1_000*10**18);
+
         // stake ape coin
         apeStake.depositSelfApeCoin(1_000*10**18);
 
         vm.stopPrank();
     }
+
+    function testDepositBayc() public {
+        vm.startPrank(alice);
+
+        apeCoin.mint(address(alice), 1_000_000*10**18);
+        assertEq(apeCoin.balanceOf(address(alice)), 1_000_000*10**18);
+        apeCoin.approve(address(apeStake), 1_000*10**18);
+        assertEq(apeCoin.allowance(address(alice), address(apeStake)), 1_000*10**18);
+
+        bayc.mint(1);
+        assertEq(bayc.balanceOf(address(alice)), 1);
+        bayc.approve(address(apeStake), 0);
+        assertEq(bayc.getApproved(0), address(apeStake));
+        // stake bayc
+        ApeCoinStaking.SingleNft[] memory nft = new ApeCoinStaking.SingleNft[](1);
+        nft[0].tokenId = 0;
+        nft[0].amount = 1_000*10**18;
+        apeStake.depositBAYC(nft);
+
+        vm.stopPrank();
+    }
+
+    function testDepositMayc() public {
+        vm.startPrank(alice);
+
+        apeCoin.mint(address(alice), 1_000_000*10**18);
+        assertEq(apeCoin.balanceOf(address(alice)), 1_000_000*10**18);
+        apeCoin.approve(address(apeStake), 1_000*10**18);
+        assertEq(apeCoin.allowance(address(alice), address(apeStake)), 1_000*10**18);
+
+        mayc.mint(1);
+        assertEq(mayc.balanceOf(address(alice)), 1);
+        mayc.approve(address(apeStake), 0);
+        assertEq(mayc.getApproved(0), address(apeStake));
+        // stake bayc
+        ApeCoinStaking.SingleNft[] memory nft = new ApeCoinStaking.SingleNft[](1);
+        nft[0].tokenId = 0;
+        nft[0].amount = 1_000*10**18;
+        apeStake.depositMAYC(nft);
+
+        vm.stopPrank();
+    }
+
+    function testDepositBakc() public {
+        vm.startPrank(alice);
+
+        apeCoin.mint(address(alice), 1_000_000*10**18);
+        assertEq(apeCoin.balanceOf(address(alice)), 1_000_000*10**18);
+        apeCoin.approve(address(apeStake), 1_000*10**18);
+        assertEq(apeCoin.allowance(address(alice), address(apeStake)), 1_000*10**18);
+
+        bayc.mint(1);
+        assertEq(bayc.balanceOf(address(alice)), 1);
+        bayc.approve(address(apeStake), 0);
+        assertEq(bayc.getApproved(0), address(apeStake));
+        assertEq(bayc.ownerOf(0), address(alice));
+        bakc.mint(1);
+        assertEq(bakc.balanceOf(address(alice)), 1);
+        bakc.approve(address(apeStake), 0);
+        assertEq(bakc.getApproved(0), address(apeStake));
+        assertEq(bakc.ownerOf(0), address(alice));
+        // stake makc
+        ApeCoinStaking.PairNftWithAmount[] memory nft_bored = new ApeCoinStaking.PairNftWithAmount[](1);
+        nft_bored[0].mainTokenId = 0;
+        nft_bored[0].bakcTokenId = 0;
+        nft_bored[0].amount = 1_000*10**18;
+        ApeCoinStaking.PairNftWithAmount[] memory nft_mutant;
+        apeStake.depositBAKC(nft_bored, nft_mutant);
+
+        vm.stopPrank();
+    }
+
+
 }
