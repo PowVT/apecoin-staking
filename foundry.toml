@@ -11,7 +11,7 @@ etherscan_api_key="YOURETHERSCANAPIKEY"
 remappings = [
   "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
   "@openzeppelin/contracts=lib/openzeppelin-contracts/contracts",
-  "@arcadexyz/=lib/v2-contracts/contracts/"
+  "@arcadexyz/contracts=lib/v2-contracts/contracts/"
 ]
 
 

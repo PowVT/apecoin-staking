@@ -12,8 +12,8 @@ import { console } from "forge-std/console.sol";
 
 contract ContractTest is Test {
 
-    address constant alice = address(0x1111);
-    address constant bob = address(0x1337);
+    address constant alice = address(0x1111); // user
+    address constant bob = address(0x1337); // contract owner
 
     SimpleERC20 public apeCoin;
     SimpleERC721 public bayc;
@@ -28,6 +28,10 @@ contract ContractTest is Test {
         mayc = new SimpleERC721("Mutant Ape Yacht Club", "MAYC", "https://ipfs.io/ipfs/");
         bakc = new SimpleERC721("Bored Ape Kennel Club", "BAKC", "https://ipfs.io/ipfs/");
         apeStake = new ApeCoinStaking(address(apeCoin), address(bayc), address(mayc), address(bakc));
+        vm.startPrank(bob);
+        apeCoin.mint(address(bob), 1_000_000);
+        apeCoin.transfer(address(apeStake), 1_000_000);
+        vm.stopPrank();
         // setup apeCoin staking pool (this test contract is the owner)
         // start: Oct18
         // end: Nov18
@@ -49,7 +53,7 @@ contract ContractTest is Test {
 
     }
 
-    function testDepositApe() public {
+    function testClaimApe() public {
         vm.startPrank(alice);
 
         apeCoin.mint(address(alice), 1_000_000*10**18);
@@ -59,11 +63,21 @@ contract ContractTest is Test {
 
         // stake ape coin
         apeStake.depositSelfApeCoin(1_000*10**18);
+        // fast forward time 1 week
+        skip(7 * 86400);
+        // claim
+        apeStake.claimSelfApeCoin();
+        // fast forward time 1 week
+        skip(7 * 86400);
+        // withdraw apeCoin
+        apeStake.withdrawApeCoin(1_000*10**18, address(alice));
+
+        console.log(apeCoin.balanceOf(address(alice)));
 
         vm.stopPrank();
     }
 
-    function testDepositBayc() public {
+    function testClaimBayc() public {
         vm.startPrank(alice);
 
         apeCoin.mint(address(alice), 1_000_000*10**18);
@@ -84,7 +98,7 @@ contract ContractTest is Test {
         vm.stopPrank();
     }
 
-    function testDepositMayc() public {
+    function testClaimMayc() public {
         vm.startPrank(alice);
 
         apeCoin.mint(address(alice), 1_000_000*10**18);
@@ -105,7 +119,7 @@ contract ContractTest is Test {
         vm.stopPrank();
     }
 
-    function testDepositBakc() public {
+    function testClaimBakc() public {
         vm.startPrank(alice);
 
         apeCoin.mint(address(alice), 1_000_000*10**18);
